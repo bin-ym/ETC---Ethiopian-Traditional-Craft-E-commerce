@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/css/main.06e5dc4f.css",
+    "main.js": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/js/main.4010be6a.js",
+    "index.html": "/ETC---Ethiopian-Traditional-Craft-E-commerce/index.html",
+    "main.06e5dc4f.css.map": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/css/main.06e5dc4f.css.map",
+    "main.4010be6a.js.map": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/js/main.4010be6a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.06e5dc4f.css",
+    "static/js/main.4010be6a.js"
+  ]
+}
