@@ -1,12 +1,15 @@
 // src/components/ProductDetails.js
-import React from 'react';
+import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import './ProductDetails.css';
+import { CartContext } from '../contexts/CartContext';
 
 const ProductDetails = () => {
     const { id } = useParams();
-    // Fetch product details using id
+    const { addToCart } = useContext(CartContext);
+
     const product = {
+        id,
         name: 'Sample Product',
         description: 'This is a sample product description.',
         price: '$100'
@@ -17,7 +20,7 @@ const ProductDetails = () => {
             <h2>{product.name}</h2>
             <p>{product.description}</p>
             <p>Price: {product.price}</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart(product)}>Add to Cart</button>
         </div>
     );
 };

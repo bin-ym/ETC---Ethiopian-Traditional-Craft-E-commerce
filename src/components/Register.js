@@ -6,13 +6,19 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (password !== confirmPassword) {
-            alert('Passwords do not match!');
+        if (!email || !password || !confirmPassword) {
+            setError('Please fill out all fields');
             return;
         }
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+        setError('');
         // Implement registration logic here
     };
 
@@ -20,6 +26,7 @@ const Register = () => {
         <div className="register">
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
+                {error && <p className="error">{error}</p>}
                 <label>
                     Email<br />
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
