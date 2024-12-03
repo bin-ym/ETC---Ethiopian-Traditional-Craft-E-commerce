@@ -1,13 +1,15 @@
 {
   "files": {
-    "main.css": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/css/main.06e5dc4f.css",
-    "main.js": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/js/main.4010be6a.js",
+    "main.css": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/css/main.946bd098.css",
+    "main.js": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/js/main.1473dd94.js",
+    "static/media/mesob.jpg": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/media/mesob.2667b5e6311b8c9b1212.jpg",
+    "static/media/ethiopia.jpg": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/media/ethiopia.878504259149bddbfa6d.jpg",
     "index.html": "/ETC---Ethiopian-Traditional-Craft-E-commerce/index.html",
-    "main.06e5dc4f.css.map": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/css/main.06e5dc4f.css.map",
-    "main.4010be6a.js.map": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/js/main.4010be6a.js.map"
+    "main.946bd098.css.map": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/css/main.946bd098.css.map",
+    "main.1473dd94.js.map": "/ETC---Ethiopian-Traditional-Craft-E-commerce/static/js/main.1473dd94.js.map"
   },
   "entrypoints": [
-    "static/css/main.06e5dc4f.css",
-    "static/js/main.4010be6a.js"
+    "static/css/main.946bd098.css",
+    "static/js/main.1473dd94.js"
   ]
 }
