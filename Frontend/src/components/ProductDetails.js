@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
-import { CartContext } from "../contexts/CartContext"; // Updated path
+import { CartContext } from "../contexts/CartContext";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
@@ -13,9 +13,13 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
       try {
         if (!id) throw new Error("Product ID is missing from URL.");
+        console.log("📤 Fetching product with ID:", id);
         const response = await fetch(`http://localhost:5000/api/products/${id}`);
-        if (!response.ok)
-          throw new Error(`Failed to fetch product. Status: ${response.status}`);
+        if (!response.ok) {
+          const errorMessage = `Failed to fetch product with ID ${id}. Status: ${response.status}`;
+          const data = await response.json().catch(() => null);
+          throw new Error(data?.message || errorMessage);
+        }
         const productData = await response.json();
         if (!productData) throw new Error("Product not found.");
         setProduct(productData);
@@ -26,12 +30,15 @@ const ProductDetails = () => {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [id]);
 
   const handleAddToCart = () => {
     if (!product) return;
+    if (product.stock <= 0) {
+      alert("Sorry, this product is out of stock!");
+      return;
+    }
     const cartItem = {
       id: product._id,
       name: product.name,
@@ -87,12 +94,20 @@ const ProductDetails = () => {
               Category: {product.category}
             </p>
           )}
+          <p className="text-sm text-center text-gray-500">
+            Stock: {product.stock > 0 ? `${product.stock} left` : "Out of stock"}
+          </p>
           <div className="flex justify-center space-x-4">
             <button
               onClick={handleAddToCart}
-              className="px-6 py-2 text-white bg-indigo-600 rounded hover:bg-indigo-700"
+              disabled={product.stock <= 0}
+              className={`px-6 py-2 text-white rounded ${
+                product.stock > 0
+                  ? "bg-indigo-600 hover:bg-indigo-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
             >
-              Add to Cart
+              {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
             </button>
             <Link
               to="/products"

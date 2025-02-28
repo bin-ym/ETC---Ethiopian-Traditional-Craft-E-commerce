@@ -5,7 +5,7 @@ const Home = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-800 text-white">
             <h1 className="text-5xl font-extrabold text-center mb-6">
-                Welcome to Ethiopian Traditional Craft E-commerce
+                Welcome to Web Based Ethiopian Traditional Craft E-commerce
             </h1>
             <p className="text-xl mb-6 text-center max-w-2xl px-4">
                 Discover unique, handcrafted Ethiopian products and bring the beauty of Ethiopian culture into your home.
