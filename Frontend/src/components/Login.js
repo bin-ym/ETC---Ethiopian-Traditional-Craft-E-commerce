@@ -5,7 +5,6 @@ import axios from "axios";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user"); // Default role
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -16,22 +15,23 @@ const Login = () => {
     setError("");
 
     try {
-      const endpoint = role === "artisan" ? "/api/artisans/login" : "/api/users/login";
       const response = await axios.post(
-        `http://localhost:5000${endpoint}`,
+        `http://localhost:5000/api/auth/login`,
         { email, password },
-        { withCredentials: true } // Send cookies with request
+        { withCredentials: true }
       );
 
       if (response.status === 200) {
         const { role: serverRole, id } = response.data;
         console.log("✅ Login Successful:", { role: serverRole, id });
 
-        // Redirect based on role (no token storage needed)
+        // Redirect based on role
         if (serverRole === "artisan") {
           navigate("/artisan/");
         } else if (serverRole === "user") {
           navigate("/customer/");
+        } else if (serverRole === "admin") {
+          navigate("/admin/");
         } else {
           navigate("/");
         }
@@ -49,17 +49,6 @@ const Login = () => {
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h2 className="mb-6 text-3xl font-bold text-center text-gray-800">Login</h2>
         <form onSubmit={handleLogin}>
-          <div className="mb-4">
-            <label className="block mb-1 text-sm font-semibold text-gray-700">Role</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded"
-            >
-              <option value="user">Customer</option>
-              <option value="artisan">Artisan</option>
-            </select>
-          </div>
           <div className="mb-4">
             <label className="block mb-1 text-sm font-semibold text-gray-700">Email</label>
             <input

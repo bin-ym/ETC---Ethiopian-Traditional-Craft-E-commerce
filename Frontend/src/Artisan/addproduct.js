@@ -5,22 +5,18 @@ const AddProduct = () => {
     name: "",
     price: "",
     description: "",
-    category: "", // Changed to empty string for dropdown
+    category: "",
     image: null,
   });
 
   const categories = [
-    "Textiles",
-    "Electronics",
-    "Jewelry",
-    "Pottery",
-    "Baskets",
-    "Woodwork",
-    "Metalwork",
-    "Leather",
-    "Beadwork",
-    "Traditional Instruments",
-    "Other",
+    "Bed and Bath",
+    "Beverage",
+    "Electronics and Home Appliance",
+    "Food",
+    "Home Care",
+    "Personal Care",
+    "Stationary",
   ];
 
   const handleChange = (e) => {
@@ -37,12 +33,12 @@ const AddProduct = () => {
       formData.append("name", productData.name);
       formData.append("price", productData.price);
       formData.append("description", productData.description);
-      formData.append("category", productData.category || "Uncategorized"); // Default if not selected
+      formData.append("category", productData.category || "Uncategorized");
       formData.append("image", productData.image);
 
       const response = await fetch("http://localhost:5000/api/products", {
         method: "POST",
-        credentials: "include", // Include session cookie
+        credentials: "include",
         body: formData,
       });
 
@@ -53,7 +49,7 @@ const AddProduct = () => {
       const result = await response.json();
       console.log("Product inserted successfully:", result);
       alert("Product added successfully!");
-      setProductData({ name: "", price: "", description: "", category: "", image: null }); // Reset form
+      setProductData({ name: "", price: "", description: "", category: "", image: null });
     } catch (error) {
       console.error("Error inserting product:", error.message);
       alert("Failed to add product.");

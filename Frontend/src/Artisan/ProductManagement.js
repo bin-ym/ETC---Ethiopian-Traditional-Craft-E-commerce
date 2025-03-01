@@ -20,17 +20,13 @@ const ProductManagement = () => {
   const [error, setError] = useState(null);
 
   const categories = [
-    "Textiles",
-    "Electronics",
-    "Jewelry",
-    "Pottery",
-    "Baskets",
-    "Woodwork",
-    "Metalwork",
-    "Leather",
-    "Beadwork",
-    "Traditional Instruments",
-    "Other",
+    "Bed and Bath",
+    "Beverage",
+    "Electronics and Home Appliance",
+    "Food",
+    "Home Care",
+    "Personal Care",
+    "Stationary",
   ];
 
   useEffect(() => {
@@ -230,7 +226,7 @@ const ProductManagement = () => {
                   </td>
                   <td className="px-4 py-2">{product.name}</td>
                   <td className="px-4 py-2">{product.description}</td>
-                  <td className="px-4 py-2">${product.price}</td>
+                  <td className="px-4 py-2">{product.price} Br</td>
                   <td className="px-4 py-2">{product.stock}</td>
                   <td className="flex items-center px-4 py-2 space-x-4">
                     <button

@@ -24,6 +24,7 @@ const NavbarCustomer = () => {
           <Link to="/products" className="hover:underline">Shop</Link>
           <Link to="/cart" className="hover:underline">Cart</Link>
           <Link to="/customer/orders" className="hover:underline">Orders</Link>
+          <Link to="/customer/comments" className="hover:underline">Comments</Link> {/* Added Comments Link */}
           <Link to="/customer/profile" className="hover:underline">Profile</Link>
           <button
             onClick={handleLogout}

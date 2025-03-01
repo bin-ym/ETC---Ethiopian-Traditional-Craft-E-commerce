@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Add useState and useEffect
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "./contexts/CartContext";
 import Home from "./components/Home";
@@ -17,13 +17,20 @@ import NavbarArtisan from "./Artisan/NavbarArtisan";
 import NavbarCustomer from "./customer/NavbarCustomer";
 import CustomerApp from "./customer/CustomerApp";
 import PaymentSuccess from "./components/PaymentSuccess";
+import Footer from "./components/Footer";
 import axios from "axios";
+
+// Note: We're keeping the inline styles for the layout structure
+const appStyles = {
+  minHeight: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+};
 
 function ShowNavbar() {
   const location = useLocation();
   const [role, setRole] = useState(null);
 
-  // Fetch session role on mount or path change
   useEffect(() => {
     const fetchSessionRole = async () => {
       try {
@@ -31,66 +38,69 @@ function ShowNavbar() {
           withCredentials: true,
         });
         setRole(response.data.role || null);
+        console.log("Fetched role:", response.data.role);
       } catch (err) {
         console.log("No active session:", err.response?.data || err.message);
-        setRole(null); // No session or error
+        setRole(null);
       }
     };
     fetchSessionRole();
   }, [location.pathname]);
 
-  console.log("Current path:", location.pathname, "Role:", role);
+  console.log("ShowNavbar: Current path:", location.pathname, "Role:", role);
 
-  // Show NavbarArtisan for logged-in artisans
+  if (location.pathname.startsWith("/admin")) {
+    return null; // No navbar for admin routes
+  }
   if (role === "artisan") {
     return <NavbarArtisan />;
   }
-  // Show NavbarCustomer for logged-in customers
   if (role === "user") {
     return <NavbarCustomer />;
   }
-  // Show default Navbar for public routes (not admin) when not logged in
-  if (!location.pathname.includes("/admin")) {
-    return <Navbar />;
-  }
-  // No navbar for admin routes
-  return null;
+  return <Navbar />;
 }
 
 function App() {
-  console.log("App is rendering");
+  console.log("App: Rendering main application");
+
   return (
     <CartProvider>
       <Router>
-        <ShowNavbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/products" element={<ProductList />} />
-          <Route path="/products/:id" element={<ProductDetails />} />
-          <Route path="/payment-page" element={<PaymentPage />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/admin/*" element={<AdminApp />} />
-          <Route path="/artisan/*" element={<ArtisanApp />} />
-          <Route path="/customer/*" element={<CustomerApp />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route
-            path="*"
-            element={
-              <div>
-                {console.log("Rendering 404 for path:", window.location.pathname)}
-                <h1 style={{ textAlign: "center", color: "red" }}>404: Page Not Found</h1>
-                <p style={{ textAlign: "center" }}>The requested page does not exist.</p>
-              </div>
-            }
-          />
-        </Routes>
+        <div style={appStyles}>
+          <ShowNavbar />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/products" element={<ProductList />} />
+              <Route path="/products/:id" element={<ProductDetails />} />
+              <Route path="/payment-page" element={<PaymentPage />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/admin/*" element={<AdminApp />} />
+              <Route path="/artisan/*" element={<ArtisanApp />} />
+              <Route path="/customer/*" element={<CustomerApp />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route
+                path="*"
+                element={
+                  <div className="py-10 text-center">
+                    {console.log("App: Rendering 404 for path:", window.location.pathname)}
+                    <h1 className="mb-2 text-4xl text-red-600">404: Page Not Found</h1>
+                    <p className="text-gray-600">The requested page does not exist.</p>
+                  </div>
+                }
+              />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </Router>
     </CartProvider>
   );
 }
 
-export default App;
+export default App; 

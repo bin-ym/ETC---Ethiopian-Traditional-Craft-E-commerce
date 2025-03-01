@@ -61,7 +61,7 @@ const Cart = () => {
                       +
                     </button>
                   </div>
-                  <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-semibold">{(item.price * item.quantity).toFixed(2)} Br</p>
                   <button
                     onClick={() => removeFromCart(item.id)}
                     className="px-4 py-1 text-white transition bg-red-500 rounded-lg hover:bg-red-600"
@@ -74,7 +74,7 @@ const Cart = () => {
             <div className="p-6 bg-gray-900 rounded-lg shadow-lg">
               <h3 className="text-2xl font-bold text-yellow-400">Cart Summary</h3>
               <p className="mt-4 text-lg">
-                Total: <span className="font-semibold">${calculateTotalPrice().toFixed(2)}</span>
+                Total: <span className="font-semibold">{calculateTotalPrice().toFixed(2)} Br</span>
               </p>
               <button
                 onClick={handleCheckout}

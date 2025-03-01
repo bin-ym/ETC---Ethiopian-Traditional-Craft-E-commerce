@@ -11,7 +11,7 @@ const PaymentSuccess = () => {
           🎉 Payment Successful!
         </h2>
         <p className="text-xl text-gray-700">
-          You paid <span className="font-semibold">${new URLSearchParams(window.location.search).get("amount") || "N/A"}</span> successfully.
+          You paid <span className="font-semibold">{new URLSearchParams(window.location.search).get("amount") || "N/A"} Br</span> successfully.
         </p>
         <button
           onClick={() => navigate("/products")}

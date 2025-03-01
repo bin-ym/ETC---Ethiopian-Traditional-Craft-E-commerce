@@ -138,7 +138,7 @@ const OrderManagement = () => {
                   filteredOrders.map((order) => (
                     <tr key={order._id}>
                       <td className="px-4 py-2">{order.userId?.name || "Unknown Customer"}</td>
-                      <td className="px-4 py-2">${order.totalAmount.toFixed(2)}</td>
+                      <td className="px-4 py-2">{order.totalAmount.toFixed(2)} Br</td>
                       <td className="px-4 py-2">{order.status}</td>
                       <td className="px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
                       <td className="px-4 py-2 space-x-2">

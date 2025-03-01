@@ -1,71 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-
-// Register necessary chart components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const AdminDashboard = () => {
-    const [productsCount, setProductsCount] = useState(120);
-    const [ordersCount, setOrdersCount] = useState(34);
-    const [usersCount, setUsersCount] = useState(500);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        // Simulate fetching dynamic data (we'll replace this with backend data later)
-        setProductsCount(120); // Replace with dynamic data
-        setOrdersCount(34); // Replace with dynamic data
-        setUsersCount(500); // Replace with dynamic data
-    }, []);
+  useEffect(() => {
+    fetchStatistics();
+  }, []);
 
-    const data = {
-        labels: ['Products', 'Orders', 'Users'],
-        datasets: [
-            {
-                label: 'Total Count',
-                data: [productsCount, ordersCount, usersCount],
-                backgroundColor: ['#34D399', '#FBBF24', '#60A5FA'],
-                borderRadius: 8,
-            },
-        ],
-    };
+  const fetchStatistics = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get("http://localhost:5000/api/admin/statistics", {
+        withCredentials: true,
+      });
+      setStats(response.data);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to fetch statistics.");
+      console.error("Error fetching statistics:", err.response?.data || err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const options = {
-        responsive: true,
-        plugins: {
-            title: {
-                display: true,
-                text: 'Dashboard Overview',
-            },
-            legend: {
-                position: 'top',
-            },
-        },
-    };
+  return (
+    <div className="container px-6 py-12 mx-auto">
+      <div className="p-6 bg-white rounded-lg shadow-lg">
+        <h1 className="mb-4 text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+        <p className="mb-6 text-lg text-gray-700">
+          Welcome to the Admin Dashboard! Below are key statistics about the platform.
+        </p>
 
-    return (
-        <div className="min-h-screen text-white bg-gradient-to-r from-green-500 to-teal-600">
-            <main className="container px-6 py-12 mx-auto">
-                <section id="dashboard" className="mb-8">
-                    <h2 className="mb-4 text-3xl font-bold">Overview</h2>
-                    <p>Welcome, Admin! Here is a quick overview of your store:</p>
-                    <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-3">
-                        <div className="p-6 bg-white rounded shadow-md">
-                            <h3 className="mb-2 text-lg font-bold text-green-600">Products</h3>
-                            <Bar data={data} options={options} />
-                        </div>
-                        <div className="p-6 bg-white rounded shadow-md">
-                            <h3 className="mb-2 text-lg font-bold text-green-600">Orders</h3>
-                            <Bar data={data} options={options} />
-                        </div>
-                        <div className="p-6 bg-white rounded shadow-md">
-                            <h3 className="mb-2 text-lg font-bold text-green-600">Users</h3>
-                            <Bar data={data} options={options} />
-                        </div>
-                    </div>
-                </section>
-            </main>
-        </div>
-    );
+        {loading && (
+          <div className="flex items-center justify-center">
+            <svg className="w-6 h-6 text-blue-600 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h-8z"></path>
+            </svg>
+            <p className="ml-2 text-gray-500">Loading statistics...</p>
+          </div>
+        )}
+        {error && (
+          <div className="text-center">
+            <p className="font-medium text-red-500">{error}</p>
+            <button
+              onClick={fetchStatistics}
+              className="px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+        {stats && !loading && !error && (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {/* Total Products */}
+            <div className="p-6 text-center rounded-lg shadow-md bg-blue-50">
+              <h3 className="mb-2 text-xl font-semibold text-gray-800">Total Products</h3>
+              <p className="text-3xl font-bold text-blue-600">{stats.totalProducts}</p>
+            </div>
+            {/* Total Orders */}
+            <div className="p-6 text-center rounded-lg shadow-md bg-blue-50">
+              <h3 className="mb-2 text-xl font-semibold text-gray-800">Total Orders</h3>
+              <p className="text-3xl font-bold text-blue-600">{stats.totalOrders}</p>
+            </div>
+            {/* Total Users */}
+            <div className="p-6 text-center rounded-lg shadow-md bg-blue-50">
+              <h3 className="mb-2 text-xl font-semibold text-gray-800">Total Users</h3>
+              <p className="text-3xl font-bold text-blue-600">{stats.totalUsers}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default AdminDashboard;

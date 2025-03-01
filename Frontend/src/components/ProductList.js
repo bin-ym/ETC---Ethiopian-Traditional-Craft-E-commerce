@@ -9,8 +9,18 @@ const ProductList = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(500);
+  const [maxPrice, setMaxPrice] = useState(10000); // Changed to number
   const [selectedCategory, setSelectedCategory] = useState("");
+
+  const categories = [
+    "Bed and Bath",
+    "Beverage",
+    "Electronics and Home Appliance",
+    "Food",
+    "Home Care",
+    "Personal Care",
+    "Stationary",
+  ];
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -38,9 +48,12 @@ const ProductList = () => {
   };
 
   const handlePriceChange = (e, type) => {
-    const value = Number(e.target.value);
-    if (type === "min") setMinPrice(Math.min(value, maxPrice));
-    if (type === "max") setMaxPrice(Math.max(value, minPrice));
+    const value = Math.max(0, Number(e.target.value)); // Ensure non-negative
+    if (type === "min") {
+      setMinPrice(value <= maxPrice ? value : maxPrice);
+    } else if (type === "max") {
+      setMaxPrice(value >= minPrice ? value : minPrice);
+    }
     filterProducts(searchTerm, type === "min" ? value : minPrice, type === "max" ? value : maxPrice, selectedCategory);
   };
 
@@ -51,25 +64,22 @@ const ProductList = () => {
   };
 
   const filterProducts = (search, min, max, category) => {
-    let filtered = products.filter(
-      (product) =>
-        product.name?.toLowerCase().includes(search) &&
-        product.price >= min &&
-        product.price <= max
-    );
-    if (category) filtered = filtered.filter((product) => product.category === category);
+    let filtered = products.filter((product) => {
+      const nameMatches = product.name?.toLowerCase().includes(search) || false;
+      const priceMatches = product.price >= min && product.price <= max;
+      const categoryMatches = category ? product.category === category : true;
+      return nameMatches && priceMatches && categoryMatches;
+    });
     setFilteredProducts(filtered);
   };
 
   const resetFilters = () => {
     setSearchTerm("");
     setMinPrice(0);
-    setMaxPrice(500);
+    setMaxPrice(10000); // Reset to full range
     setSelectedCategory("");
     setFilteredProducts(products);
   };
-
-  const categories = [...new Set(products.map((product) => product.category).filter(Boolean))];
 
   return (
     <div className="flex p-6 space-x-6 bg-gray-100 rounded-lg shadow-md">
@@ -95,6 +105,7 @@ const ProductList = () => {
               onChange={(e) => handlePriceChange(e, "min")}
               placeholder="Min Price"
               min="0"
+              max={maxPrice}
               className="w-1/2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <span className="text-gray-600">-</span>
@@ -103,7 +114,8 @@ const ProductList = () => {
               value={maxPrice}
               onChange={(e) => handlePriceChange(e, "max")}
               placeholder="Max Price"
-              min="0"
+              min={minPrice}
+              max="10000"
               className="w-1/2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -113,7 +125,7 @@ const ProductList = () => {
           <input
             type="range"
             min="0"
-            max="500"
+            max="10000" // Fixed syntax
             value={minPrice}
             onChange={(e) => handlePriceChange(e, "min")}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
@@ -121,12 +133,12 @@ const ProductList = () => {
           <input
             type="range"
             min="0"
-            max="500"
+            max="10000" // Fixed syntax
             value={maxPrice}
             onChange={(e) => handlePriceChange(e, "max")}
             className="w-full h-2 mt-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
-          <p className="mt-2 text-sm text-gray-600">${minPrice} - ${maxPrice}</p>
+          <p className="mt-2 text-sm text-gray-600">{minPrice} Br - {maxPrice} Br</p>
         </div>
         <div className="mb-4">
           <label className="block mb-2 font-semibold text-gray-700">Category</label>
@@ -189,7 +201,7 @@ const ProductList = () => {
                       className="object-cover w-full h-48 mx-auto mb-4 rounded-lg"
                     />
                     <h3 className="text-lg font-bold text-gray-800">{product.name || "Unnamed Product"}</h3>
-                    <p className="font-semibold text-indigo-600">${product.price?.toFixed(2) || "Price unavailable"}</p>
+                    <p className="font-semibold text-indigo-600">{product.price?.toFixed(2) || "Price unavailable"} Br</p>
                   </Link>
                 </li>
               ))

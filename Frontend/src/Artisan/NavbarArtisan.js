@@ -23,6 +23,7 @@ const NavbarArtisan = () => {
           <Link to="/artisan" className="hover:underline">Dashboard</Link>
           <Link to="/artisan/products" className="hover:underline">Products</Link>
           <Link to="/artisan/orders" className="hover:underline">Orders</Link>
+          <Link to="/artisan/comments" className="hover:underline">Comments</Link> {/* Added Comments Link */}
           <Link to="/artisan/profile" className="hover:underline">Profile</Link>
           <button
             onClick={handleLogout}

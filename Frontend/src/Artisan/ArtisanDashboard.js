@@ -79,7 +79,7 @@ const ArtisanDashboard = () => {
             </div>
             <div className="p-6 bg-white rounded shadow-md">
               <h2 className="text-xl font-semibold">Sales Today</h2>
-              <p className="text-2xl">${stats.salesToday.toFixed(2)}</p>
+              <p className="text-2xl">{stats.salesToday.toFixed(2)} Br</p>
             </div>
           </div>
 

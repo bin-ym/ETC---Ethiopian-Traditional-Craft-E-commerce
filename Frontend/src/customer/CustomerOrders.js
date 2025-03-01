@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CustomerOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchOrders();
@@ -16,7 +17,7 @@ const CustomerOrders = () => {
     setError(null);
     try {
       const response = await axios.get("http://localhost:5000/api/orders/customer", {
-        withCredentials: true, // Send session cookie
+        withCredentials: true,
       });
       console.log("Fetched Customer Orders:", response.data);
       setOrders(response.data);
@@ -28,9 +29,24 @@ const CustomerOrders = () => {
     }
   };
 
+  const handlePayNow = (order) => {
+    // Redirect to payment page with order details
+    navigate("/payment-page", {
+      state: {
+        orderId: order._id,
+        amount: order.totalAmount,
+        email: "", // You might want to fetch the customer's email from their profile
+        first_name: "", // Fetch from user profile or pass via form
+        last_name: "", // Fetch from user profile or pass via form
+        phone_number: "", // Fetch from user profile or pass via form
+        tx_ref: `tx-${order._id}-${Date.now()}`,
+      },
+    });
+  };
+
   return (
     <div className="container px-6 py-12 mx-auto">
-      <h1 className="mb-4 text-3xl font-bold">Your Orders</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-800">Your Orders</h1>
 
       {loading && (
         <p className="text-center text-gray-500">
@@ -64,23 +80,54 @@ const CustomerOrders = () => {
               <tr>
                 <th className="px-4 py-2 text-left">Order ID</th>
                 <th className="px-4 py-2 text-left">Total</th>
-                <th className="px-4 py-2 text-left">Status</th>
+                <th className="px-4 py-2 text-left">Order Status</th>
+                <th className="px-4 py-2 text-left">Payment Status</th>
                 <th className="px-4 py-2 text-left">Order Date</th>
+                <th className="px-4 py-2 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
               {orders.length > 0 ? (
                 orders.map((order) => (
-                  <tr key={order._id}>
+                  <tr key={order._id} className="border-b">
                     <td className="px-4 py-2">{order._id}</td>
-                    <td className="px-4 py-2">${order.totalAmount.toFixed(2)}</td>
+                    <td className="px-4 py-2">{order.totalAmount.toFixed(2)} Br</td>
                     <td className="px-4 py-2">{order.status}</td>
+                    <td className="px-4 py-2">
+                      <span
+                        className={`inline-block px-2 py-1 rounded text-sm ${
+                          order.paymentStatus === "Success"
+                            ? "bg-green-100 text-green-800"
+                            : order.paymentStatus === "Pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {order.paymentStatus}
+                      </span>
+                    </td>
                     <td className="px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="flex px-4 py-2 space-x-2">
+                      <Link
+                        to={`/customer/orders/${order._id}`}
+                        className="px-4 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
+                      >
+                        View Details
+                      </Link>
+                      {order.paymentStatus === "Pending" && (
+                        <button
+                          onClick={() => handlePayNow(order)}
+                          className="px-4 py-1 text-white bg-green-500 rounded hover:bg-green-600"
+                        >
+                          Pay Now
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="px-4 py-2 text-center text-gray-500">
+                  <td colSpan="6" className="px-4 py-2 text-center text-gray-500">
                     No orders found.
                   </td>
                 </tr>
