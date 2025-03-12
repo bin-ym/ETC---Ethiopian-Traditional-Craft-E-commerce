@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translateText } from "../utils/translate";
 
 const AdminProducts = () => {
+  const { language } = useLanguage();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,39 +22,36 @@ const AdminProducts = () => {
       });
       setProducts(response.data);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to fetch products.");
-      console.error("Error fetching products:", err.response?.data || err.message);
+      setError(err.response?.data?.error || translateText("Failed to fetch products.", language));
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteProduct = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    if (!window.confirm(translateText("Are you sure you want to delete this product?", language))) return;
 
     try {
       await axios.delete(`http://localhost:5000/api/products/admin/${id}`, {
         withCredentials: true,
       });
       setProducts(products.filter((product) => product._id !== id));
-      console.log("✅ Product Deleted:", id);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to delete product.");
-      console.error("Error deleting product:", err.response?.data || err.message);
+      setError(err.response?.data?.error || translateText("Failed to delete product.", language));
     }
   };
 
   return (
     <div className="container px-6 py-12 mx-auto">
       <div className="p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="mb-4 text-3xl font-bold text-gray-800">Admin Products</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-800">{translateText("Admin Products", language)}</h1>
         {loading && (
           <div className="flex items-center justify-center">
             <svg className="w-6 h-6 text-blue-600 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h-8z"></path>
             </svg>
-            <p className="ml-2 text-gray-500">Loading products...</p>
+            <p className="ml-2 text-gray-500">{translateText("Loading products...", language)}</p>
           </div>
         )}
         {error && (
@@ -61,7 +61,7 @@ const AdminProducts = () => {
               onClick={fetchProducts}
               className="px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
             >
-              Retry
+              {translateText("Retry", language)}
             </button>
           </div>
         )}
@@ -70,13 +70,13 @@ const AdminProducts = () => {
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
-                  <th className="px-4 py-2 text-left">Image</th>
-                  <th className="px-4 py-2 text-left">Product Name</th>
-                  <th className="px-4 py-2 text-left">Category</th>
-                  <th className="px-4 py-2 text-left">Price</th>
-                  <th className="px-4 py-2 text-left">Stock</th>
-                  <th className="px-4 py-2 text-left">Artisan</th> {/* New Column */}
-                  <th className="px-4 py-2 text-left">Actions</th>
+                  <th className="px-4 py-2 text-left">{translateText("Image", language)}</th>
+                  <th className="px-4 py-2 text-left">{translateText("Product Name", language)}</th>
+                  <th className="px-4 py-2 text-left">{translateText("Category", language)}</th>
+                  <th className="px-4 py-2 text-left">{translateText("Price", language)}</th>
+                  <th className="px-4 py-2 text-left">{translateText("Stock", language)}</th>
+                  <th className="px-4 py-2 text-left">{translateText("Artisan", language)}</th>
+                  <th className="px-4 py-2 text-left">{translateText("Actions", language)}</th>
                 </tr>
               </thead>
               <tbody>
@@ -92,15 +92,15 @@ const AdminProducts = () => {
                       </td>
                       <td className="px-4 py-2">{product.name}</td>
                       <td className="px-4 py-2">{product.category}</td>
-                      <td className="px-4 py-2">${product.price.toFixed(2)}</td>
+                      <td className="px-4 py-2">{product.price.toFixed(2)} Br</td>
                       <td className="px-4 py-2">{product.stock}</td>
-                      <td className="px-4 py-2">{product.artisanId?.name || "Unknown Artisan"}</td> {/* Display Artisan Name */}
+                      <td className="px-4 py-2">{product.artisanId?.name || translateText("Unknown Artisan", language)}</td>
                       <td className="px-4 py-2">
                         <button
                           onClick={() => handleDeleteProduct(product._id)}
                           className="px-4 py-1 text-white bg-red-500 rounded hover:bg-red-600"
                         >
-                          Delete
+                          {translateText("Delete", language)}
                         </button>
                       </td>
                     </tr>
@@ -108,7 +108,7 @@ const AdminProducts = () => {
                 ) : (
                   <tr>
                     <td colSpan="7" className="px-4 py-2 text-center text-gray-500">
-                      No products found.
+                      {translateText("No products found.", language)}
                     </td>
                   </tr>
                 )}

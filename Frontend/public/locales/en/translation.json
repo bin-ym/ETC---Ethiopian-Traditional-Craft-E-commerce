@@ -1,0 +1,112 @@
+{
+  "brandName": "Ethiopian Crafts",
+  "home": {
+    "title": "Welcome to Ethiopian Traditional Craft E-commerce",
+    "description": "Discover unique, handcrafted Ethiopian products and bring the beauty of Ethiopian culture into your home.",
+    "explore": "Explore Products"
+  },
+  "navbar": {
+    "home": "Home",
+    "products": "Products",
+    "cart": "Cart",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "productList": {
+    "filters": "Filters",
+    "productList": "Product List",
+    "searchProduct": "Search Product",
+    "priceRange": "Price Range",
+    "category": "Category",
+    "resetFilters": "Reset Filters",
+    "loading": "Loading products...",
+    "noProducts": "No products match your search"
+  },
+  "productDetails": {
+    "back": "Back to Product List",
+    "category": "Category",
+    "stock": "Stock",
+    "quantity": "Quantity",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of stock",
+    "loading": "Loading product details...",
+    "notFound": "Product not found",
+    "success": "{quantity} x {name} added to cart!",
+    "errorStock": "Only {stock} items left in stock!"
+  },
+  "cart": {
+    "title": "Your Shopping Cart",
+    "empty": "Your cart is empty",
+    "startShopping": "Start Shopping",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "proceedToCheckout": "Proceed to Checkout"
+  },
+  "login": {
+    "title": "Welcome Back",
+    "description": "Sign in to access your personalized shopping experience",
+    "email": "Email Address",
+    "password": "Password",
+    "loginButton": "Login",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign Up"
+  },
+  "signup": {
+    "title": "Create Your Account",
+    "roleLabel": "I am a:",
+    "customer": "Customer",
+    "artisan": "Artisan",
+    "name": "Full Name",
+    "email": "Email Address",
+    "password": "Password",
+    "phoneNumber": "Phone Number",
+    "shopName": "Shop Name",
+    "signUpButton": "Sign Up",
+    "hasAccount": "Already have an account?",
+    "login": "Login",
+    "passwordStrength": "Password Strength: {strength}"
+  },
+  "adminUsers": {
+    "title": "Admin Users",
+    "customers": "Customers",
+    "artisans": "Artisans",
+    "name": "Name",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "shopName": "Shop Name",
+    "status": "Status",
+    "actions": "Actions",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "loading": "Loading users and artisans...",
+    "noCustomers": "No customers found",
+    "noArtisans": "No artisans found"
+  },
+  "adminComments": {
+    "title": "Admin Comments",
+    "comment": "Comment",
+    "user": "User",
+    "product": "Product",
+    "date": "Date",
+    "actions": "Actions",
+    "delete": "Delete",
+    "loading": "Loading comments...",
+    "noComments": "No comments found"
+  },
+  "customerComments": {
+    "title": "My Comments",
+    "addNewComment": "Add New Comment",
+    "comment": "Comment",
+    "product": "Product",
+    "date": "Date",
+    "actions": "Actions",
+    "viewDetails": "View Details",
+    "delete": "Delete",
+    "loading": "Loading comments...",
+    "noComments": "No comments found. Add one to get started!",
+    "modalTitle": "Add New Comment",
+    "selectProduct": "Select Product",
+    "cancel": "Cancel",
+    "submit": "Add Comment"
+  }
+}

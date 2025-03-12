@@ -1,66 +1,78 @@
-import React, { createContext, useState, useEffect } from "react";
+// CartContext.js
+import React, { createContext, useState, useCallback } from "react";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  // Initialize state directly from localStorage
-  const [cartItems, setCartItems] = useState(() => {
-    const storedCart = localStorage.getItem("cart");
-    return storedCart ? JSON.parse(storedCart) : [];
-  });
-
-  // Save cart to local storage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  // Get total count of items in cart
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const [cart, setCart] = useState([]);
 
   // Add item to cart
-  const addToCart = (item) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((i) => i.id === item.id);
+  const addToCart = useCallback((item) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
       if (existingItem) {
-        return prevItems.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        return prevCart.map((cartItem) =>
+          cartItem.id === item.id
+            ? { 
+                ...cartItem, 
+                quantity: Math.min(
+                  cartItem.quantity + item.quantity,
+                  cartItem.stock // Ensure we don't exceed stock
+                )
+              }
+            : cartItem
         );
       }
-      return [...prevItems, { ...item, quantity: 1 }];
+      return [...prevCart, { ...item, quantity: Math.min(item.quantity, item.stock) }];
     });
-  };
+  }, []);
+
+  // Update item quantity
+  const updateQuantity = useCallback((itemId, newQuantity) => {
+    setCart((prevCart) => {
+      return prevCart.map((cartItem) =>
+        cartItem.id === itemId
+          ? { 
+              ...cartItem, 
+              quantity: Math.max(1, Math.min(newQuantity, cartItem.stock))
+            }
+          : cartItem
+      );
+    });
+  }, []);
 
   // Remove item from cart
-  const removeFromCart = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
+  const removeFromCart = useCallback((itemId) => {
+    setCart((prevCart) => prevCart.filter((cartItem) => cartItem.id !== itemId));
+  }, []);
 
-  // Update quantity of a specific item
-  const updateQuantity = (id, quantity) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-      )
-    );
-  };
+  // Clear cart
+  const clearCart = useCallback(() => {
+    setCart([]);
+  }, []);
 
-  // Clear the entire cart
-  const clearCart = () => {
-    setCartItems([]);
-    localStorage.removeItem("cart");
+  // Get total items in cart
+  const getTotalItems = useCallback(() => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  }, [cart]);
+
+  // Get total price
+  const getTotalPrice = useCallback(() => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  }, [cart]);
+
+  const value = {
+    cartItems: cart, // Changed from 'cart' to match Cart component usage
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+    getTotalItems,
+    getTotalPrice
   };
 
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        cartCount,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-      }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

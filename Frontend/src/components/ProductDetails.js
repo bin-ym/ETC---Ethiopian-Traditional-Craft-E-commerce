@@ -1,31 +1,36 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
+import axios from "axios";
 import { CartContext } from "../contexts/CartContext";
+import { useLanguage } from "../contexts/LanguageContext"; // Import LanguageContext
+import { translateText } from "../utils/translate"; // Import translate utility
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const ProductDetails = () => {
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const { id } = useParams();
+  const [stock, setStock] = useState(0);
   const { addToCart } = useContext(CartContext);
+  const { language } = useLanguage(); // Get current language
 
   const fetchProduct = async () => {
+    setLoading(true);
+    setError("");
     try {
-      if (!id) throw new Error("Product ID is missing from URL.");
       console.log("📤 Fetching product with ID:", id);
-      const response = await fetch(`http://localhost:5000/api/products/${id}`);
-      if (!response.ok) {
-        const errorMessage = `Failed to fetch product with ID ${id}. Status: ${response.status}`;
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.message || errorMessage);
-      }
-      const productData = await response.json();
-      if (!productData) throw new Error("Product not found.");
+      const response = await axios.get(`${API_URL}/api/products/${id}`);
+      const productData = response.data;
+      if (!productData) throw new Error(translateText("Product not found.", language));
       setProduct(productData);
+      setStock(productData.stock || 0); // Ensure stock is set correctly
     } catch (err) {
       console.error("❌ Fetch Error:", err.message);
-      setError(err.message);
+      setError(err.response?.data?.error || translateText("Failed to fetch product details.", language));
     } finally {
       setLoading(false);
     }
@@ -33,145 +38,177 @@ const ProductDetails = () => {
 
   useEffect(() => {
     fetchProduct();
-  }, [id]);
-
-  const handleQuantityChange = (e) => {
-    const value = Number(e.target.value);
-    setQuantity(value);
-  };
+  }, [id, language]);
 
   const handleAddToCart = () => {
-    if (!product) return;
-    if (product.stock <= 0) {
-      alert("Sorry, this product is out of stock!");
+    if (!product) {
+      setError(translateText("No product to add.", language));
       return;
     }
-    if (quantity > product.stock) {
-      alert(`Only ${product.stock} items left in stock!`);
+    if (stock <= 0) {
+      setError(translateText("Sorry, this product is out of stock!", language));
       return;
     }
-    const cartItem = {
-      id: product._id,
-      name: product.name,
-      price: product.price,
-      image: product.image
-        ? `http://localhost:5000${product.image}`
-        : "https://via.placeholder.com/150",
-      quantity: quantity,
-    };
-    addToCart(cartItem);
-    alert(`${quantity} x ${product.name} added to cart!`);
-    setQuantity(1);
+    if (quantity > stock) {
+      setError(translateText(`Only ${stock} items left in stock!`, language));
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      // Prepare cart item
+      const cartItem = {
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.image ? `${API_URL}${product.image}` : "https://via.placeholder.com/150",
+        quantity: quantity,
+        artisanId: product.artisanId,
+        stock: product.stock, // Include stock for validation in Cart
+      };
+
+      // Add to cart
+      addToCart(cartItem);
+      setStock((prevStock) => prevStock - quantity); // Update local stock
+      setSuccess(translateText(`${quantity} x ${product.name} added to cart!`, language));
+      setQuantity(1); // Reset quantity
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (err) {
+      console.error("❌ Add to Cart Error:", err);
+      setError(translateText("Failed to add to cart.", language));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const retryFetch = () => {
-    setLoading(true);
-    setError(null);
-    fetchProduct();
-  };
+  if (loading) {
+    return (
+      <div className="py-12 text-center bg-gray-100">
+        <svg
+          className="w-8 h-8 mx-auto text-indigo-600 animate-spin"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
+        </svg>
+        <p className="mt-2 text-gray-600">{translateText("Loading product details...", language)}</p>
+      </div>
+    );
+  }
+
+  if (error && !product) {
+    return (
+      <div className="max-w-5xl p-6 mx-auto mt-16 text-center bg-gray-100 rounded-lg shadow-md">
+        <p className="font-medium text-red-500">{error}</p>
+        <button
+          onClick={fetchProduct}
+          className="px-4 py-2 mt-2 text-white transition duration-300 bg-indigo-600 rounded-md hover:bg-indigo-700"
+        >
+          {translateText("Retry", language)}
+        </button>
+        <Link
+          to="/products"
+          className="block mt-2 text-indigo-600 hover:underline"
+        >
+          {translateText("Back to Product List", language)}
+        </Link>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="py-12 text-center text-gray-500 bg-gray-100">
+        {translateText("Product not found.", language)}
+      </div>
+    );
+  }
+
+  const imageUrl = product.image
+    ? `${API_URL}${product.image}`
+    : "https://via.placeholder.com/150";
 
   return (
-    <div className="max-w-5xl p-6 mx-auto mt-16"> {/* Added mt-16 to push down */}
-      {/* Back to Product List Button */}
+    <div className="max-w-5xl p-6 mx-auto mt-16 bg-gray-100 rounded-lg shadow-md">
       <div className="mb-6">
         <Link
           to="/products"
-          className="inline-block px-4 py-2 text-indigo-600 border border-indigo-600 rounded hover:bg-indigo-100"
+          className="inline-block px-4 py-2 text-indigo-600 transition duration-300 border border-indigo-600 rounded-md hover:bg-indigo-100"
         >
-          Back to Product List
+          {translateText("Back to Product List", language)}
         </Link>
       </div>
-
-      {loading && (
-        <div className="flex items-center justify-center">
-          <svg className="w-6 h-6 text-indigo-600 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h-8z"></path>
-          </svg>
-          <p className="ml-2 text-gray-500">Loading...</p>
+      <div className="flex flex-col gap-8 p-6 bg-white rounded-lg lg:flex-row">
+        <div className="lg:w-1/2">
+          <img
+            src={imageUrl}
+            alt={product.name}
+            onError={(e) => (e.target.src = "https://via.placeholder.com/150")}
+            className="object-cover w-full rounded-lg shadow-md h-96"
+          />
         </div>
-      )}
-      {error && (
-        <div className="space-y-2 text-center">
-          <p className="font-medium text-red-500">{error}</p>
-          <button
-            onClick={retryFetch}
-            className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
-          >
-            Retry
-          </button>
-          <Link
-            to="/products"
-            className="block text-indigo-600 hover:underline"
-          >
-            Back to Product List
-          </Link>
-        </div>
-      )}
-      {product && !loading && !error && (
-        <div className="flex flex-col space-x-0 md:flex-row md:space-x-6">
-          {/* Image Section */}
-          <div className="flex justify-center w-full md:w-1/2">
-            <img
-              src={
-                product.image
-                  ? `http://localhost:5000${product.image}`
-                  : "https://via.placeholder.com/150"
-              }
-              alt={product.name || "Product Image"}
-              className="object-contain w-3/4 h-64 rounded-lg"
-            />
-          </div>
-          {/* Details Section */}
-          <div className="w-full space-y-4 md:w-1/2">
-            <h3 className="text-2xl font-bold text-gray-800">{product.name || "Unnamed Product"}</h3>
-            <p className="text-2xl font-semibold text-gray-900">
-              {product.price?.toFixed(2) || "Price unavailable"} Br
-            </p>
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600">
-                Category: <span className="font-medium">{product.category || "Uncategorized"}</span>
-              </p>
-              <p className="text-sm text-gray-600">
-                Unit: <span className="font-medium">PCS</span>
-              </p>
-              <p className={`text-sm ${product.stock > 0 ? "text-gray-600" : "text-red-600"}`}>
-                Stock:{" "}
-                <span className="font-medium">
-                  {product.stock > 0 ? `Only ${product.stock} left - Hurry and order yours!` : "Out of stock"}
-                </span>
-              </p>
-              {product.stock > 0 && (
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-600">Quantity:</label>
-                  <select
-                    value={quantity}
-                    onChange={handleQuantityChange}
-                    className="p-1 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  >
-                    {[...Array(Math.min(product.stock, 10))].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>
-                        {i + 1}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+        <div className="space-y-4 lg:w-1/2">
+          <h1 className="text-3xl font-bold text-indigo-600">{product.name}</h1>
+          <p className="text-xl text-gray-700">{product.price.toFixed(2)} Br</p>
+          <p className="text-gray-600">{product.description}</p>
+          <p className="text-gray-600">
+            {translateText("Category", language)}:{" "}
+            <span className="font-medium">{product.category || translateText("Uncategorized", language)}</span>
+          </p>
+          <p className={`text-gray-600 ${stock <= 0 ? "text-red-500" : ""}`}>
+            {translateText("Stock", language)}:{" "}
+            <span className="font-medium">
+              {stock > 0 ? stock : translateText("Out of stock", language)}
+            </span>
+          </p>
+          {stock > 0 && (
+            <div className="flex items-center space-x-2">
+              <label className="font-semibold text-gray-700">{translateText("Quantity", language)}:</label>
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value >= 1 && value <= stock) setQuantity(value);
+                }}
+                min="1"
+                max={stock}
+                className="w-16 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                disabled={loading}
+              />
             </div>
-            <button
-              onClick={handleAddToCart}
-              disabled={product.stock <= 0}
-              className={`w-full py-3 text-black font-semibold rounded-lg ${
-                product.stock > 0
-                  ? "bg-yellow-400 hover:bg-yellow-500"
-                  : "bg-gray-300 cursor-not-allowed"
-              }`}
-            >
-              Add to Cart
-            </button>
-          </div>
+          )}
+          <button
+            onClick={handleAddToCart}
+            className={`w-full py-3 text-white font-semibold rounded-md transition duration-300 ${
+              stock > 0
+                ? "bg-indigo-600 hover:bg-indigo-700"
+                : "bg-gray-300 cursor-not-allowed"
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={loading || stock <= 0}
+          >
+            {loading ? translateText("Adding...", language) : translateText("Add to Cart", language)}
+          </button>
+          {error && <p className="text-red-500">{error}</p>}
+          {success && <p className="text-green-500">{success}</p>}
         </div>
-      )}
+      </div>
     </div>
   );
 };

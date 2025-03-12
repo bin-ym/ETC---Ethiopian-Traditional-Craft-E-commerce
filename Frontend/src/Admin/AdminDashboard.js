@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translateText } from "../utils/translate";
 
 const AdminDashboard = () => {
+  const { language } = useLanguage();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,8 +22,7 @@ const AdminDashboard = () => {
       });
       setStats(response.data);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to fetch statistics.");
-      console.error("Error fetching statistics:", err.response?.data || err.message);
+      setError(err.response?.data?.error || translateText("Failed to fetch statistics.", language));
     } finally {
       setLoading(false);
     }
@@ -29,9 +31,9 @@ const AdminDashboard = () => {
   return (
     <div className="container px-6 py-12 mx-auto">
       <div className="p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="mb-4 text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-800">{translateText("Admin Dashboard", language)}</h1>
         <p className="mb-6 text-lg text-gray-700">
-          Welcome to the Admin Dashboard! Below are key statistics about the platform.
+          {translateText("Welcome to the Admin Dashboard! Below are key statistics about the platform.", language)}
         </p>
 
         {loading && (
@@ -40,7 +42,7 @@ const AdminDashboard = () => {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h-8z"></path>
             </svg>
-            <p className="ml-2 text-gray-500">Loading statistics...</p>
+            <p className="ml-2 text-gray-500">{translateText("Loading statistics...", language)}</p>
           </div>
         )}
         {error && (
@@ -50,25 +52,22 @@ const AdminDashboard = () => {
               onClick={fetchStatistics}
               className="px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
             >
-              Retry
+              {translateText("Retry", language)}
             </button>
           </div>
         )}
         {stats && !loading && !error && (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {/* Total Products */}
             <div className="p-6 text-center rounded-lg shadow-md bg-blue-50">
-              <h3 className="mb-2 text-xl font-semibold text-gray-800">Total Products</h3>
+              <h3 className="mb-2 text-xl font-semibold text-gray-800">{translateText("Total Products", language)}</h3>
               <p className="text-3xl font-bold text-blue-600">{stats.totalProducts}</p>
             </div>
-            {/* Total Orders */}
             <div className="p-6 text-center rounded-lg shadow-md bg-blue-50">
-              <h3 className="mb-2 text-xl font-semibold text-gray-800">Total Orders</h3>
+              <h3 className="mb-2 text-xl font-semibold text-gray-800">{translateText("Total Orders", language)}</h3>
               <p className="text-3xl font-bold text-blue-600">{stats.totalOrders}</p>
             </div>
-            {/* Total Users */}
             <div className="p-6 text-center rounded-lg shadow-md bg-blue-50">
-              <h3 className="mb-2 text-xl font-semibold text-gray-800">Total Users</h3>
+              <h3 className="mb-2 text-xl font-semibold text-gray-800">{translateText("Total Users", language)}</h3>
               <p className="text-3xl font-bold text-blue-600">{stats.totalUsers}</p>
             </div>
           </div>

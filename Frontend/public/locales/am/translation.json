@@ -1,0 +1,112 @@
+{
+  "brandName": "የኢትዮጵያ የእጅ ሥራዎች",
+  "home": {
+    "title": "እንኳን ወደ ኢትዮጵያ ባህላዊ የእጅ ሥራ ኢኮሜርስ ተቀበሉ",
+    "description": "የተለያዩ በእጅ የተሰሩ የኢትዮጵያ ምርቶችን ያስሱ እና የኢትዮጵያ ባህል ውበት ወደ ቤትዎ ያምጡ።",
+    "explore": "ምርቶችን ያስሱ"
+  },
+  "navbar": {
+    "home": "መነሻ",
+    "products": "ምርቶች",
+    "cart": "ጋሪ",
+    "login": "መግባት",
+    "logout": "መውጣት"
+  },
+  "productList": {
+    "filters": "ማጣሪያዎች",
+    "productList": "የምርት ዝርዝር",
+    "searchProduct": "ምርት ፈልግ",
+    "priceRange": "የዋጋ ክልል",
+    "category": "ምድብ",
+    "resetFilters": "ማጣሪያዎችን እንደገና አስጀምር",
+    "loading": "ምርቶችን በመጫን ላይ...",
+    "noProducts": "ምንም ምርቶች ከፍለጋዎ ጋር አይዛመዱም"
+  },
+  "productDetails": {
+    "back": "ወደ ምርት ዝርዝር ተመለስ",
+    "category": "ምድብ",
+    "stock": "ክምችት",
+    "quantity": "ብዛት",
+    "addToCart": "ወደ ጋሪ ጨምር",
+    "outOfStock": "ክምችት ውስጥ የለም",
+    "loading": "የምርት ዝርዝሮችን በመጫን ላይ...",
+    "notFound": "ምርት አልተገኘም",
+    "success": "{quantity} x {name} ወደ ጋሪ ተጨምሯል!",
+    "errorStock": "በክምችት ውስጥ {stock} ብቻ ቀርቷል!"
+  },
+  "cart": {
+    "title": "የእርስዎ የግዢ ጋሪ",
+    "empty": "የእርስዎ ጋሪ ባዶ ነው",
+    "startShopping": "ግዢ ጀምር",
+    "subtotal": "ንዑስ ድምር",
+    "total": "ጠቅላላ",
+    "proceedToCheckout": "ወደ መፈተሻ ቀጥል"
+  },
+  "login": {
+    "title": "እንኳን ደህና መጡ",
+    "description": "ለግል የተበጀ የግዢ ተሞክሮ ለመድረስ ይግቡ",
+    "email": "የኢሜይል አድራሻ",
+    "password": "የይለፍ ቃል",
+    "loginButton": "መግባት",
+    "noAccount": "መለያ የለዎትም?",
+    "signUp": "ይመዝገቡ"
+  },
+  "signup": {
+    "title": "መለያዎን ይፍጠሩ",
+    "roleLabel": "እኔ ነኝ:",
+    "customer": "ደንበኛ",
+    "artisan": "የእጅ ባለሙያ",
+    "name": "ሙሉ ስም",
+    "email": "የኢሜይል አድራሻ",
+    "password": "የይለፍ ቃል",
+    "phoneNumber": "ስልክ ቁጥር",
+    "shopName": "የሱቅ ስም",
+    "signUpButton": "ይመዝገቡ",
+    "hasAccount": "መለያ አለዎት?",
+    "login": "መግባት",
+    "passwordStrength": "የይለፍ ቃል ጥንካሬ: {strength}"
+  },
+  "adminUsers": {
+    "title": "የአስተዳዳሪ ተጠቃሚዎች",
+    "customers": "ደንበኞች",
+    "artisans": "የእጅ ባለሙያዎች",
+    "name": "ስም",
+    "email": "ኢሜይል",
+    "phoneNumber": "ስልክ ቁጥር",
+    "shopName": "የሱቅ ስም",
+    "status": "ሁኔታ",
+    "actions": "ተግባራት",
+    "activate": "መቀነስ",
+    "deactivate": "ማጥፋት",
+    "loading": "ተጠቃሚዎችን እና የእጅ ባለሙያዎችን በመጫን ላይ...",
+    "noCustomers": "ምንም ደንበኞች አልተገኙም",
+    "noArtisans": "ምንም የእጅ ባለሙያዎች አልተገኙም"
+  },
+  "adminComments": {
+    "title": "የአስተዳዳሪ አስተያየቶች",
+    "comment": "አስተያየት",
+    "user": "ተጠቃሚ",
+    "product": "ምርት",
+    "date": "ቀን",
+    "actions": "ተግባራት",
+    "delete": "ሰርዝ",
+    "loading": "አስተያየቶችን በመጫን ላይ...",
+    "noComments": "ምንም አስተያየቶች አልተገኙም"
+  },
+  "customerComments": {
+    "title": "የእኔ አስተያየቶች",
+    "addNewComment": "አዲስ አስተያየት ጨምር",
+    "comment": "አስተያየት",
+    "product": "ምርት",
+    "date": "ቀን",
+    "actions": "ተግባራት",
+    "viewDetails": "ዝርዝሮችን ይመልከቱ",
+    "delete": "ሰርዝ",
+    "loading": "አስተያየቶችን በመጫᨍር ላይ...",
+    "noComments": "ምንም አስተያየቶች አልተገኙም። አንድ ይጨምሩ ለመጀመር!",
+    "modalTitle": "አዲስ አስተያየት ጨምር",
+    "selectProduct": "ምርት ይምረጡ",
+    "cancel": "መሰረዝ",
+    "submit": "አስተያየት ጨምር"
+  }
+}
